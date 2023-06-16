@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+  environment {
+    registry = "mm167/numeric-app"
+    registryCredential = 'docker-hub'
+  }
+
     stages {
         stage('GitHub') {
             steps {
@@ -33,6 +38,31 @@ pipeline {
             }
           }
         }
+        
+        stage('Docker Build and Push') {
+          steps {
+            withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
+              sh 'printenv'
+              sh 'docker build -t $registry:$BUILD_NUMBER .'
+              sh 'docker push $registry:$BUILD_NUMBER'
+              
+            }
+          }
+        }
+        
+        stage('Remove Unused docker image') {
+          steps{
+            sh "docker rmi $registry:$BUILD_NUMBER"
+          }
+        }
+        
+        stage('Kubernetes Deployment - DEV') {
+          steps {
+            withKubeConfig([credentialsId: 'kubernetes-config']) {
+              sh "sed -i 's#replace#${registry}:${BUILD_NUMBER}#g' k8s_deployment_service.yaml"
+              sh "kubectl apply -f k8s_deployment_service.yaml"
+            }
+          }
+        }
     }
 }
-
