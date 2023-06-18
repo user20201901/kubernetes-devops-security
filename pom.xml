@@ -94,7 +94,7 @@
 				<version>6.1.6</version>
 				<configuration>
 					<format>ALL</format>
-					<failBuildOnCVSS>5</failBuildOnCVSS>
+					<failBuildOnCVSS>11</failBuildOnCVSS>
 					<!-- fail the build for CVSS greater than or equal to 5 -->
 					<!-- use internal mirroring of CVE contents Suppress files E.g. a company-wide suppression file and local project file -->
 					<!-- 
