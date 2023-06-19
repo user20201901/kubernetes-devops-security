@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-alpine
+FROM eclipse-temurin:17.0.7_7-jre
 EXPOSE 8080
 ARG JAR_FILE=target/*.jar
 ADD ${JAR_FILE} app.jar
