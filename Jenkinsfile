@@ -4,6 +4,12 @@ pipeline {
   environment {
     registry = "mm167/numeric-app"
     registryCredential = 'docker-hub'
+    deploymentName = "devsecops"
+    containerName = "devsecops-container"
+    serviceName = "devsecops-svc"
+    imageName = "mm167/numeric-app:${GIT_COMMIT}"
+    applicationURL = "http://192.168.49.2"
+    applicationURI = "/increment/99"
   }
 
     stages {
@@ -94,8 +100,14 @@ pipeline {
         stage('Kubernetes Deployment - DEV') {
           steps {
             withKubeConfig([credentialsId: 'kubernetes-config']) {
-              sh "sed -i 's#replace#${registry}:${BUILD_NUMBER}#g' k8s_deployment_service.yaml"
-              sh "kubectl apply -f k8s_deployment_service.yaml"
+              sh "bash k8s-deployment.sh"
+            }
+          }
+        }
+        stage('Kubernetes Rollout') {
+          steps {
+            withKubeConfig([credentialsId: 'kubernetes-config']) {
+              sh "bash k8s-deployment-rollout-status.sh"
             }
           }
         }
