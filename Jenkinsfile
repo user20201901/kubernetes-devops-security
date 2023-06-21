@@ -7,7 +7,7 @@ pipeline {
     deploymentName = "devsecops"
     containerName = "devsecops-container"
     serviceName = "devsecops-svc"
-    imageName = "mm167/numeric-app:${GIT_COMMIT}"
+    imageName = "mm167/numeric-app:${BUILD_NUMBER}"
     applicationURL = "http://192.168.49.2"
     applicationURI = "/increment/99"
   }
@@ -70,7 +70,7 @@ pipeline {
 	            sh "bash trivy-docker-image-scan.sh"
 	          },
 	          "OPA Conftest": {
-	            sh 'docker run --rm -v $(pwd):/project openpolicyagent/conftest test --policy opa-docker-security.rego Dockerfile'
+	            sh 'docker run --rm -v $(pwd):/project openpolicyagent/conftest test --policy opa-docker-security.rego dockerfiles/Dockerfile'
 	          }
 	        )
 	      }
@@ -80,9 +80,9 @@ pipeline {
           steps {
             withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
               sh 'printenv'
-              sh 'docker build . -t $registry:$BUILD_NUMBER -f dockerfiles/Dockerfile'
+              sh 'cp target/*.jar dockerfiles'
+              sh 'cd dockerfiles && docker build -t $registry:$BUILD_NUMBER .'
               sh 'docker push $registry:$BUILD_NUMBER'
-              
             }
           }
         }
