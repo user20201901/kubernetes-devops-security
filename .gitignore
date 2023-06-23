@@ -26,3 +26,5 @@ bin
 .classpath
 .project
 target
+
+.talismanrc
