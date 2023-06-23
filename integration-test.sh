@@ -4,7 +4,7 @@
 
 sleep 5s
 
-PORT=$()
+PORT=$(kubectl -n default get svc ${serviceName} -o json | jq .spec.ports[].nodePort)
 
 echo $PORT
 echo $applicationURL:$PORT/$applicationURI
