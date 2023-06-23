@@ -5,3 +5,4 @@ fileignoreconfig:
   checksum: 22f3b6f9c5422b33462b21e9e8e358d6ee5a464d7791049f21e1305560bc5164
 fileignoreconfig:
 - filename: pom.xml
+  checksum: 11ab9902d147c48e2779a5dfe411789a5523d851ff9c0986352991fea5ccd2d8
